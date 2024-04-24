@@ -8,3 +8,6 @@
 ## *The adventure awaits...*
 <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHdwOWVoY29zOHpreHdtNzMzNDQ4NDhnczlla2lwYmZpdXdhbGhsZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Lopx9eUi34rbq/giphy.gif" width="200"/>
 
+---
+
+### :woman_technologist: About Me :
