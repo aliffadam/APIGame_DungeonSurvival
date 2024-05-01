@@ -1,75 +1,39 @@
-const bcrypt = require('bcrypt')
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(express.json())
 
-
-app.get('/leaderboard', async(req, res) => {
-    let LatestLB = await client.db("benr24231").collection("datacollection")
-        .find()
-        .sort({ score: -1 }) // Sort by score in descending order
-        .toArray();
-
-    res.json(LatestLB);
-});
-app.post('/register',async(req,res)=>{
-    let Exists= await client.db("benr24231").collection("datacollection").findOne({
-        player:req.body.player
-    });
-    if(Exists){
-        res.status(404).send("Player already exists");
-    }
-    else{
-        const hash = bcrypt.hashSync(req.body.password, 10);
-        let result= await client.db("benr24231").collection("datacollection").insertOne({
-            player:req.body.player,
-            password:hash
-        });
-    }
-    res.send({message:"Account created successfully, please reme,ber your player id"});
+app.get('/', (req, res) => {
+   res.send('Hello World!')
 })
-<<<<<<< HEAD
-app.post('/forgetuserID', async(req, res) => {
-    let result = await client.db("benr24231").collection("datacollection").findOne({
-        player: req.body.player,
-        password: req.body.password
-    })
-    if(!req.body.username || !req.body.password){
-        res.status(404).send('Please provide username and password')
-      }
-      else if(req.body.player != null && req.body.password != null){
-      
-        if(result){
-          //step2:if user exists, check if password is correct
-          if(bcrypt.compareSync(req.body.password,result.password)==true){
-            //paaword is correct
-            res.send(result._id);
-          } else{
-            //password is incorrect
-            res.status(404).send('Wrong Password');
-          
-          }
-        }else{
-          //step3:if user not found
-          res.send('User not found');
-        
-        }
-    }
-    
-});
-
-app.listen(port, () => {
-    console.log(`Leaderboard app listening on port ${port}`);
-});
-
-
-
-
-=======
 
 app.listen(port, () => {
    console.log(`Example app listening on port ${port}`)
 })
->>>>>>> parent of 1090164 (Connect to MongoDB)
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://ds_dev:ds_devgroupb@clusterds.imsywsc.mongodb.net/?retryWrites=true&w=majority&appName=ClusterDS";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
