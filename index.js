@@ -30,7 +30,6 @@ app.post('/register',async(req,res)=>{
     }
     res.send({message:"Account created successfully, please reme,ber your player id"});
 })
-<<<<<<< HEAD
 app.post('/forgetuserID', async(req, res) => {
     let result = await client.db("benr24231").collection("datacollection").findOne({
         player: req.body.player,
@@ -67,9 +66,3 @@ app.listen(port, () => {
 
 
 
-=======
-
-app.listen(port, () => {
-   console.log(`Example app listening on port ${port}`)
-})
->>>>>>> parent of 1090164 (Connect to MongoDB)
