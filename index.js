@@ -4,12 +4,6 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
-const testRoutes = require(`./test`)
-const test_two = require(`./test_two`)
-
-app.use(testRoutes)
-app.use(test_two)
-
 app.get('/', (req, res) => {
    res.send('Hello World!')
    client.db
