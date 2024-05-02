@@ -6,9 +6,15 @@ app.use(express.json())
 
 let client = await require(`./database`)
 
+const almanacRoute = require(`./almanac`)
+
+app.use(almanacRoute)
+
 app.get('/', (req, res) => {
-   res.send('Hello World!')
+   res.send('Welcome to dungeon dive game!')
 })
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.listen(port, () => {
    console.log(`Example app listening on port ${port}`)
