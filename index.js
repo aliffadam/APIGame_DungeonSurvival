@@ -7,8 +7,10 @@ app.use(express.json())
 let client = require(`./database`)
 
 const almanacRoute = require(`./almanac`)
+const inventoryRoute = require(`./inventory`)
 
 app.use(almanacRoute)
+app.use(inventoryRoute)
 
 app.get('/', (req, res) => {
    res.send('Welcome to dungeon dive game!')
