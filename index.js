@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
-let client = await require(`./database`)
+let client = require(`./database`)
 
 const almanacRoute = require(`./almanac`)
 
