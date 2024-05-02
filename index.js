@@ -4,8 +4,15 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
+const testRoutes = require(`./test`)
+const test_two = require(`./test_two`)
+
+app.use(testRoutes)
+app.use(test_two)
+
 app.get('/', (req, res) => {
    res.send('Hello World!')
+   client.db
 })
 
 app.listen(port, () => {
@@ -33,7 +40,7 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+   //  await client.close();
   }
 }
 run().catch(console.dir);
