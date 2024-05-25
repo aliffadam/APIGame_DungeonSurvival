@@ -6,48 +6,58 @@ let client = require(`./database.js`)
 
 Next_Action_Router.get('/next_action', async (req, res) => {
 
-    if(req.body.action == "attack") {
+    let player = await client.db('ds_db').collection('stats').findOne(
+        {
+            playerId: req.body.playerId
+        }
+    )
 
-        let player = await client.db('ds_db').collection('stats').findOne(
-            playerId = req.body.name
-        )
+    console.log(player)
+
+    if(!player) {
+        res.send('Could not find your player')
+        return
+    }
+
+    if(req.body.action == "attack") {
 
         console.log(player)
         //attack action cukup tak?
         //enemy health utk tolak
 
-
-
         if(player.attack_action > 0) {
             res.send("attack")
 
-            let result = await client.db('ds_db').collection('stats').updateOne(
+            let after_player_action = await client.db('ds_db').collection('stats').updateOne(
                 {playerId : player.playerId},
                 { $inc: {enemy_current_health: -2, attack_action: -1} }
             )
 
-            console.log(result)
+            console.log(after_player_action)
             console.log(player.enemy_next_move)
 
-            let attack = player.enemy_next_move
-            let enemy = await client.db('ds_db').collection('almanac').findOne({skill:{$elemMatch:{attack_name:attack}}})
+            let enemy_next_action = player.enemy_next_move
+            let enemy_almanac = await client.db('ds_db').collection('almanac').findOne({skill:{$elemMatch:{attack_name:enemy_next_action}}})
 
-            let skill = enemy.skill.find(skill => skill.attack_name === attack);
+            let enemy_skill = enemy_almanac.skill.find(skill => skill.attack_name === enemy_next_action);
 
-            console.log(skill.damage);
+            console.log(enemy_skill.damage);
+            console.log(enemy_skill);
+
+            let after_enemy_action = await client.db('ds_db').collection('stats').updateOne(
+                {playerId : player.playerId},
+                { $inc: {health_pts: (-1 * enemy_skill.damage)} }
+            )
 
         } else {
             res.send("Cannot attack")
         }
 
     } else if(req.body.action == "evade") {
-        let player = await client.db('ds_db').collection('stats').findOne(
-            playerId = req.body.name
-        )
 
         if(player.evade_action > 0) {
-            
-            console.log("evade")
+
+            res.send("evade")
 
             let result = await client.db('ds_db').collection('stats').updateOne(
                 {playerId : player.playerId},
@@ -58,9 +68,6 @@ Next_Action_Router.get('/next_action', async (req, res) => {
             res.send("Cannot evade")
         }
     } else if(req.body.action == "defend") {
-        let player = await client.db('ds_db').collection('stats').findOne(
-            playerId = req.body.name
-        )
 
         res.send("defend")
 
