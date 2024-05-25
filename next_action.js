@@ -27,19 +27,14 @@ Next_Action_Router.get('/next_action', async (req, res) => {
             )
 
             console.log(result)
+            console.log(player.enemy_next_move)
 
-            // let result2 = await client.db('ds_db').collection('almanac').findOne(
-            //     {skill: {$elemMatch: {attack_name:{$eq:"bite"}}}}
-            // )
-
-            let attack = "bite"
+            let attack = player.enemy_next_move
             let enemy = await client.db('ds_db').collection('almanac').findOne({skill:{$elemMatch:{attack_name:attack}}})
 
             let skill = enemy.skill.find(skill => skill.attack_name === attack);
 
             console.log(skill.damage);
-
-            //console.log(result2.skill[0].damage)
 
         } else {
             res.send("Cannot attack")
