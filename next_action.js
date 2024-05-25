@@ -16,7 +16,11 @@ Next_Action_Router.get('/next_action', async (req, res) => {
         //attack action cukup tak?
         //enemy health utk tolak
 
-//        if()
+        if(player.attack_action > 0) {
+            console.log("attack")
+        } else {
+            console.log("Cannot attack")
+        }
 
     } else if(req.body.action == "evade") {
 
