@@ -10,12 +10,19 @@
 
 ---
 
-### :video_game: About the Game :video_game:
-I am a Full Stack Developer <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> from India.
-- :telescope: I’m working as a Software Engineer and contributing to frontend and backend for building web applications.
+### :video_game: Basic Gameplay :video_game:
+*Embark on an epic journey where courage and strategy pave the path to glory* <img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30">
+#### *Every decision shapes your destiny in this thrilling adventure!*
+- ⚔️ The player engages in battles with enemies until one side loses
 
-- :seedling: Exploring Technical Content Writing.
+- 🛡️ Each turn, the player selects the action/movement the perform
 
-- :zap: In my free time, I solve problems on GeeksforGeeks and read tech articles.
+- 🏴‍☠️ After the player, the enemies perform their actions
+
+- 🩹 The player can use the potion to heal or replenish action points during the battles
+
+- ⚗️ Potions are rewarded after defeating enemies.
+
+- 🏆 The player’s scores will display at the leader-board after losing the battle
 
 - :mailbox:How to reach me: [![Linkedin Badge](https://img.shields.io/badge/-kakbar-blue?style=flat&logo=Linkedin&logoColor=white)](your-linkedin-url)
