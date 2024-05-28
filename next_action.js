@@ -34,12 +34,21 @@ Next_Action_Router.get('/next_action', async (req, res) => {    // player give t
             )
 
             //TODO
-            //check if enemy health <= 0
-            //if yes, then update it with a new randomised enemy
-            //don't continue code (use return)
+            //check if enemy health <= 0 //refer to 2 as it is not 
+            if(player.enemy_current_health <= 2) {
+                
+                //if yes, then update it with a new randomised enemy
+                
 
+                //don't continue code (use return)
+                return
+            }
+            console.log("after player action: player")
             console.log(after_player_action)
-            console.log(player.enemy_next_move)
+
+
+            //console.log(after_player_action)
+            //console.log(player.enemy_next_move)
 
             let enemy_next_action = player.enemy_next_move  //get enemy_next_move from stats(player's stats)
             let enemy_almanac = await client.db('ds_db').collection('almanac').findOne({skill:{$elemMatch:{attack_name:enemy_next_action}}})    //finding info from almanac
@@ -115,7 +124,7 @@ Next_Action_Router.get('/next_action', async (req, res) => {    // player give t
 
         
 
-//         let statPlayer= await client.db("ds_db").collection("stat").insertOne({
+//         let statPlayer= await client.db("ds_db").collection("stats").insertOne({
 //             playerID:req.body.player,
 //             inventory:0,
 //             attack_action:10,
