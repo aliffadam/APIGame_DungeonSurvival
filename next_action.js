@@ -87,9 +87,24 @@ Next_Action_Router.get('/next_action', async (req, res) => {    // player give t
         } else {
             res.send("Cannot evade")
         }
-    } else if(req.body.action == "defend") {        //TODO
-
+    } else if(req.body.action == "defend") { 
+        
         res.send("defend")
+
+        let enemy_next_action = player.enemy_next_move  //get enemy's next move from stats
+        let enemy_almanac = await client.db('ds_db').collection('almanac').findOne({skill:{$elemMatch:{attack_name:enemy_next_action}}})    //find info from almanac
+
+        let enemy_skill = enemy_almanac.skill.find(skill => skill.attack_name === enemy_next_action);   //get the json corresponding to its attack_name
+
+        console.log(enemy_skill.damage);
+        console.log(enemy_skill);
+
+        let half_damage = Math.ceil(enemy_skill.damage / 2); // Calculate half damage, rounding up if necessary
+
+        let result = await client.db('ds_db').collection('stats').updateOne(
+            { playerId: player.playerId },
+            { $inc: { health_pts: -half_damage } }
+        )
 
     } else {
         res.send("Invalid Action")
