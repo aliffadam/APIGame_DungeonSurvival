@@ -314,45 +314,45 @@ Action_Router.delete('/action', async (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Action_Router.post('/register', async (req, res) => {
-    let Exists = await client.db("ds_db").collection("account").findOne({
-        player: req.body.player
-    });
-    if (Exists) {
-        res.status(404).send("Player already exists");
-    }
-    else {
-        const hash = bcrypt.hashSync(req.body.password, 10);
-        let result = await client.db("ds_db").collection("account").insertOne({
-            player: req.body.player,
-            password: hash
-        });
+// Action_Router.post('/register', async (req, res) => {
+//     let Exists = await client.db("ds_db").collection("account").findOne({
+//         player: req.body.player
+//     });
+//     if (Exists) {
+//         res.status(404).send("Player already exists");
+//     }
+//     else {
+//         const hash = bcrypt.hashSync(req.body.password, 10);
+//         let result = await client.db("ds_db").collection("account").insertOne({
+//             player: req.body.player,
+//             password: hash
+//         });
 
-        let result1 = await client.db('ds_db').collection('almanac').aggregate([{ $sample: { size: 1 } }]).toArray();
+//         let result1 = await client.db('ds_db').collection('almanac').aggregate([{ $sample: { size: 1 } }]).toArray();
 
-        let document = result1[0]; // get the first document from the result array
-        let skills = document.skill;
+//         let document = result1[0]; // get the first document from the result array
+//         let skills = document.skill;
 
-        // Generate a random index
-        let randomIndex = Math.floor(Math.random() * skills.length);
+//         // Generate a random index
+//         let randomIndex = Math.floor(Math.random() * skills.length);
 
-        // Get a random skill
-        let randomSkill = skills[randomIndex];
-
-
+//         // Get a random skill
+//         let randomSkill = skills[randomIndex];
 
 
-        let statPlayer = await client.db("ds_db").collection("stats").insertOne({
-            playerID: req.body.player,
-            heath_pts: 10,
-            attack_action: 10,
-            evade_action: 5,
-            inventory: 0,
-            current_enemy: document.enemy,
-            enemy_current_health: document.base_health,
-            enemy_next_move: randomSkill,
-            current_score: 0
-        })
-        res.send({ message: "Account created successfully, please remember your player id" });
-    }
-})
+
+
+//         let statPlayer = await client.db("ds_db").collection("stats").insertOne({
+//             playerID: req.body.player,
+//             heath_pts: 10,
+//             attack_action: 10,
+//             evade_action: 5,
+//             inventory: 0,
+//             current_enemy: document.enemy,
+//             enemy_current_health: document.base_health,
+//             enemy_next_move: randomSkill,
+//             current_score: 0
+//         })
+//         res.send({ message: "Account created successfully, please remember your player id" });
+//     }
+// })
