@@ -1,12 +1,111 @@
 const bcrypt = require('bcrypt')
 const express = require('express');
-const Next_Action_Router = express.Router();
-module.exports = Next_Action_Router;
+const Action_Router = express.Router();
+module.exports = Action_Router;
 
 let client = require(`./database.js`)
 
-//TODO change to post as we are creating an action
-Next_Action_Router.get('/next_action', async (req, res) => {    // player give the next action they want to do
+Action_Router.post('/action', async (req, res) => {
+
+    let playerId = req.body.playerId
+    let action = req.body.action
+
+    //Validate! Check if there is enough data?
+    if (!playerId || !action) {    //data to be checked availability
+        res.send(`There's some undefined field.\nplayerId: ${playerId}\naction: ${action}`)
+        return
+    }
+
+    //Validate! Check if the player exists
+    let playerExist = await client.db('ds_db').collection('stats').findOne(
+        {playerId: playerId}
+    )
+
+    //If player does not exist, then reject
+    if(!playerExist) {
+        res.send(`Could not find ${playerId}.`)
+        return
+    }
+
+    //Validate! Check if player already have an action
+    let playerAction = await client.db('ds_db').collection('action').findOne(
+        {playerId: playerId}
+    )
+
+    //If they have an active action, then reject
+    if (playerAction) {
+        res.send(`You already have an active action:\n${playerAction.action}`)
+        return
+    }
+
+    //Validate! Check if the action is a valid action
+    if (action != "attack" && action != "evade" && action != "defend") {
+        res.send("Invalid Action")
+        return
+    }
+
+    //add the action
+    let addAction = await client.db('ds_db').collection('action').insertOne(
+        {
+            playerId: playerId,
+            action: action
+        }
+    )
+
+    //just to show the action that has been inserted
+    let currentAction = await client.db('ds_db').collection('action').findOne(
+        {
+            playerId: playerId
+        }
+    )
+
+    res.send(`You've added an action:\n${currentAction.action}`)
+})
+
+Action_Router.get('/action', async (req, res) => {
+
+    let playerId = req.body.playerId
+
+    //Validate! Check if there is enough data?
+    if (!playerId) {    //data to be checked availability
+        res.send(`There's some undefined field.\nplayerId: ${playerId}`)
+        return
+    }
+
+    //Validate! Check if the player exists
+    let playerExist = await client.db('ds_db').collection('stats').findOne(
+        {playerId: playerId}
+    )
+
+    //If player does not exist, then reject
+    if(!playerExist) {
+        res.send(`Could not find ${playerId}.`)
+        return
+    }
+
+    let playerData = await client.db('ds_db').collection('action').findOne(
+        {
+            playerId: playerId
+        }
+    )
+
+    if(!playerData) {
+        res.send('No active action found')
+        return
+    }
+
+    res.send(playerData)
+})
+
+//TODO redo the code
+Action_Router.patch('/end_turn', async (req, res) => {    // player give the next action they want to do
+
+    //Validate! Check if there is enough data?
+    if (!req.body.action || !req.body.playerId) {    //data to be checked availability
+        res.send(`There's some undefined field.\nplayerId: ${req.body.playerId}\naction: ${req.body.action}`)
+        return
+    }
+    //console.log("This is in req body", req.body)
 
     let player = await client.db('ds_db').collection('stats').findOne(  //find a document by playerId referring to playerId
         {
@@ -96,6 +195,8 @@ Next_Action_Router.get('/next_action', async (req, res) => {    // player give t
             { $set: { enemy_next_move: enemy_new_skill } }
         )
 
+        //TODO take account player health if it ia zero
+
         res.send(`You did 2 damage and the ${player.current_enemy} did ${player.enemy_next_move.damage} damage!`)
 
     } else if (req.body.action == "evade") {
@@ -160,6 +261,8 @@ Next_Action_Router.get('/next_action', async (req, res) => {    // player give t
             }
         )
 
+        //TODO Take account if player health
+
         res.send(`Defended! You only took ${half_damage} damage!`)
 
     } else {
@@ -167,9 +270,51 @@ Next_Action_Router.get('/next_action', async (req, res) => {    // player give t
     }
 })
 
+Action_Router.delete('/action', async (req, res) => {
+
+    let playerId = req.body.playerId
+
+    //Validate! Check if there is enough data?
+    if (!playerId) {    //data to be checked availability
+        res.send(`There's some undefined field.\nplayerId: ${playerId}`)
+        return
+    }
+
+    //Validate! Check if the player exists
+    let playerExist = await client.db('ds_db').collection('stats').findOne(
+        {playerId: playerId}
+    )
+
+    //If player does not exist, then reject
+    if(!playerExist) {
+        res.send(`Could not find ${playerId}.`)
+        return
+    }
+
+    //Validate! Check if player have an active action
+    let playerAction = await client.db('ds_db').collection('action').findOne(
+        {playerId: playerId}
+    )
+
+    //If there is no active action, then reject
+    if (!playerAction) {
+        res.send(`No active action found`)
+        return
+    }
+
+    //delete the action
+    let deleteAction = await client.db('ds_db').collection('action').deleteOne(
+        {
+            playerId: playerId,
+        }
+    )
+
+    res.send(`You've deleted your active action`)
+})
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Next_Action_Router.post('/register', async (req, res) => {
+Action_Router.post('/register', async (req, res) => {
     let Exists = await client.db("ds_db").collection("account").findOne({
         player: req.body.player
     });
@@ -204,7 +349,7 @@ Next_Action_Router.post('/register', async (req, res) => {
             evade_action: 5,
             inventory: 0,
             current_enemy: document.enemy,
-            enemy_health: document.base_health,
+            enemy_current_health: document.base_health,
             enemy_next_move: randomSkill,
             current_score: 0
         })
