@@ -8,9 +8,11 @@ let client = require(`./database`)
 
 const almanacRoute = require(`./almanac`)
 const inventoryRoute = require(`./inventory`)
+const nextActionRoute = require(`./next_action`)
 
 app.use(almanacRoute)
 app.use(inventoryRoute)
+app.use(nextActionRoute)
 
 app.get('/', (req, res) => {
    res.send('Welcome to dungeon dive game!')
