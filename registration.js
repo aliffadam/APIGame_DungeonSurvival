@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 
 const client = require(`./database.js`)
 var jwt = require('jsonwebtoken');
-//const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 //app.use(express.json());
 
@@ -135,6 +135,7 @@ registrationRouter.post('/account/register',async(req,res)=>{
     });
     if(Exists){
         res.status(404).send("Player already exists");
+        return
     }
     else{
         const hash = bcrypt.hashSync(req.body.password, 10);
@@ -157,8 +158,8 @@ registrationRouter.post('/account/register',async(req,res)=>{
       
 
       let statPlayer= await client.db("ds_db").collection("stats").insertOne({
-          playerID:req.body.player,
-          inventory:0,
+          playerId:req.body.player,
+          inventory:[],
           attacl_action:10,
           current_enemy:document.enemy,
           current_score:0,

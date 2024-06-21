@@ -26,11 +26,13 @@ InventoryRouter.get('/players/inventory', async (req, res) => {
   const{playerId}=req.body;
   if (!playerId) {
     res.status(400).send('Please enter u playerId')
+    return
   }
   try{
   await getPlayerById(playerId)
   }catch (error) {
     res.status(400).send(error.message);
+    return
   }
 
   const player=await db.collection('stats').findOne({playerId:playerId})
@@ -48,11 +50,11 @@ InventoryRouter.get('/players/inventory', async (req, res) => {
     }
   ];
   const playerInventory = await db.collection('stats').aggregate(pipeline).toArray();
-res.status(200).json(playerInventory);
-} 
-  
-else{
+  res.status(200).json(playerInventory);
+  return
+} else {
   res.status(400).send("Error")
+  return
 }
 
 
