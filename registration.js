@@ -1,22 +1,24 @@
-const bcrypt = require('bcrypt')
 const express = require('express');
 const registrationRouter=express.Router();
 module.exports=registrationRouter;
-const client = new MongoClient(uri);
+
+const bcrypt = require('bcrypt')
+
+const client = require(`./database.js`)
 var jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
+//const { ObjectId } = require('mongodb');
 
 //app.use(express.json());
 
 //part for token verification
 
-client.connect()
-    .then(() => {
-        app.listen(3000, () => {
-            console.log(`Server is running on port 3000`);
-        });
-    })
-    .catch(err => console.error(err));
+// client.connect()
+//     .then(() => {
+//         app.listen(3000, () => {
+//             console.log(`Server is running on port 3000`);
+//         });
+//     })
+//     .catch(err => console.error(err));
 
     function verifyToken(req, res, next) {
       const bearerHeader = req.headers['authorization'];
@@ -167,9 +169,9 @@ registrationRouter.post('/account/register',async(req,res)=>{
     
     }
     
-    res.send({message:"Account created successfully, please remember your player id"});
+    res.send("Account created successfully, please remember your player id");
     
- })
+})
 
 
 //forget userid
