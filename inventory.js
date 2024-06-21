@@ -22,7 +22,7 @@ const getPlayerById = async (playerId) => {
 
 
 // GET the players
-InventoryRouter.get('/api/players/inventory', async (req, res) => {
+InventoryRouter.get('/players/inventory', async (req, res) => {
   const{playerId}=req.body;
   if (!playerId) {
     res.status(400).send('Please enter u playerId')
@@ -32,6 +32,7 @@ InventoryRouter.get('/api/players/inventory', async (req, res) => {
   }catch (error) {
     res.status(400).send(error.message);
   }
+
   const player=await db.collection('stats').findOne({playerId:playerId})
   if(player){
   const pipeline = [
@@ -68,7 +69,7 @@ if (!playerId || !itembuy) {
   try {
      await getPlayerById(playerId);
     const player = await db.collection('stats').findOne({playerId:playerId})
-    const itemfind=await db.collection('inventory').findOne({item:itembuy})
+    const itemfind=await db.collection('potion').findOne({item:itembuy})
     
     if(itemfind){
     if(!player.coin){
@@ -155,12 +156,13 @@ InventoryRouter.patch('/usePotion', async (req, res) => {
   }
   else{
     res.status(400).send("Error")
+
   }
   
   
 });
 // DELETE an item from a player's inventory
-InventoryRouter.delete('/delete/inventory/', async (req, res) => {
+InventoryRouter.delete('/delete/inventory', async (req, res) => {
   const { playerId, item } = req.body;
   if (!playerId || !item) {
     return res.status(400).send('Missing required fields: playerId and item are required.');
@@ -188,4 +190,17 @@ InventoryRouter.delete('/delete/inventory/', async (req, res) => {
     console.error(error);
     res.status(500).send('An error occurred');
   }
+});
+
+// GET the items
+InventoryRouter.get('/inventory', async (req, res) => {
+ 
+  try {
+    const items = await db.collection('potion').find().toArray();
+    res.send(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+  }
+  
 });
