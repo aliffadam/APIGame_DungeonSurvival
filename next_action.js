@@ -124,10 +124,6 @@ Action_Router.patch('/action', async (req, res) => {
         //Process player health = 0 AND DELETE STATS
         let isAlive = await isPlayerAlive(playerId, res)
         if (!isAlive) {
-
-            let deletePlayer = await collection_stats.deleteOne(
-                { playerId: playerId }
-            )
             return
         }
 
@@ -165,10 +161,7 @@ Action_Router.patch('/action', async (req, res) => {
         //Process if player health = 0 AND DELETE STATS
         let isAlive = await isPlayerAlive(playerId, res)
         if (!isAlive) {
-
-            let deletePlayer = await collection_stats.deleteOne(
-                { playerId: playerId }
-            )
+            return
         }
 
         //enemy setup
@@ -253,6 +246,23 @@ async function isPlayerAlive(playerId, res) {
     )
 
     if (player.health_pts <= 0) {
+
+        let final_stats = await collection_stats.findOne(
+            { playerId: playerId }
+        )
+
+        let deletePlayer = await collection_stats.deleteOne(
+            { playerId: playerId }
+        )
+
+        let player_leaderboard = await ds_db.collection('leaderboard').insertOne(
+            {
+                player: final_stats.playerId,
+                score: final_stats.score,
+                coin: final_stats.coin
+            }
+        )
+
         res.send("You Died")
         return false
     }

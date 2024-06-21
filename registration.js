@@ -286,6 +286,10 @@ registrationRouter.delete('/account/delete/:id',verifyToken, async(req, res) => 
         let delete_stats = await client.db("ds_db").collection("stats").deleteOne(
           { playerId: player.player }
         )
+
+        let delete_leaderboard = await client.db('ds_db').collection('leaderboard').deleteOne(
+          { player: player.player }
+        )
         
         res.send("Account Deleted Successfully");
 
