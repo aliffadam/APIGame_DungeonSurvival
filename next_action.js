@@ -254,9 +254,10 @@ async function isPlayerAlive(playerId, res) {
 
     if (player.health_pts <= 0) {
         res.send("You Died")
+        return false
     }
 
-    return player.health_pts > 0
+    return true
 
 }
 

@@ -2,7 +2,7 @@ let client = require(`./database.js`)
 let collection_almanac = client.db('ds_db').collection('almanac')
 let collection_stats = client.db('ds_db').collection('stats')
 
-module.exports = { update_enemy }
+module.exports = { update_enemy, randomise_enemy_skill }
 
 async function randomise_enemy() {
 
@@ -44,12 +44,29 @@ async function update_enemy (playerId) {
     let enemy_name
     let enemy_health
 
+    // enemy is dead
     if(current_enemy.enemy_current_health <= 0) {
+
+        let how_much = await collection_almanac.findOne(
+            { enemy: current_enemy.current_enemy }
+        )
+
+        let reward = await collection_stats.updateOne(
+            { playerId: playerId },
+            {
+                $inc:
+                {
+                    coin: how_much.coin,
+                    score: how_much.score
+                }
+            }
+        )
 
         current_enemy = await randomise_enemy()
         enemy_name = current_enemy.enemy
         enemy_health = current_enemy.base_health
-    } else {
+
+    } else {    //enemy is still alive *dramatic music*
         enemy_name = current_enemy.current_enemy
         enemy_health = current_enemy.enemy_current_health
     }

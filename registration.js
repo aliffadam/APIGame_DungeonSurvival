@@ -8,6 +8,8 @@ const client = require(`./database.js`)
 var jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
+let { randomise_enemy_skill } = require(`./update_enemy.js`)
+
 //app.use(express.json());
 
 //part for token verification
@@ -50,6 +52,7 @@ registrationRouter.post('/account/login',async(req,res) => {
     console.log(req.body);
     if(!req.body.player || !req.body.password){
       res.status(404).send('Please provide username and password')
+      return
     }
     else if(req.body.player != null && req.body.password != null){
     
@@ -114,7 +117,7 @@ registrationRouter.post('/account/login',async(req,res) => {
 // Get the leaderboard
 
 registrationRouter.get('/leaderboard', async(req, res) => {
-    let LatestLB = await client.db("ds_db").collection("account")
+    let LatestLB = await client.db("ds_db").collection("leaderboard")
         .find()
         .sort({ score: -1 }) // Sort by score in descending order
         .toArray();
@@ -130,6 +133,12 @@ registrationRouter.get('/leaderboard', async(req, res) => {
 
 
 registrationRouter.post('/account/register',async(req,res)=>{
+
+  if(!req.body.player || !req.body.password){
+    res.status(404).send('Please provide username and password')
+    return
+  }
+
     let Exists= await client.db("ds_db").collection("account").findOne({
         player:req.body.player
     });
@@ -146,33 +155,36 @@ registrationRouter.post('/account/register',async(req,res)=>{
         });
         let result1 = await client.db('ds_db').collection('almanac').aggregate([{$sample:{size:1}}]).toArray();
       let document = result1[0]; // get the first document from the result array
-      let skills = document.skill;
+      // let skills = document.skill;
 
       // Generate a random index
-      let randomIndex = Math.floor(Math.random() * skills.length);
+      // let randomIndex = Math.floor(Math.random() * skills.length);
 
       // Get a random skill
-      let randomSkill = skills[randomIndex];
-
-
+      // let randomSkill = skills[randomIndex];
       
+      let the_enemy_skill = await randomise_enemy_skill(document.enemy)
 
       let statPlayer= await client.db("ds_db").collection("stats").insertOne({
           playerId:req.body.player,
+          health_pts:10,
+          attack_action:10,
+          evade_action:5,
           inventory:[],
-          attacl_action:10,
-          current_enemy:document.enemy,
+          coin: 0,
           current_score:0,
-          enemy_health:document.base_health,
-          enemy_next_move:randomSkill.attack_name,
-          evade_acrion:5,
-          heath_pts:10
+          current_enemy:document.enemy,
+          enemy_current_health:document.base_health,
+          enemy_next_move:the_enemy_skill,
     
      })
-    
     }
     
-    res.send("Account created successfully, please remember your player id");
+    let give_id = await client.db('ds_db').collection('account').findOne(
+      { player: req.body.player }
+     )
+
+    res.send(`Account created successfully\nuser id: ${give_id._id}\nplease remember your user id!`);
     
 })
 
@@ -205,54 +217,79 @@ registrationRouter.post('/account/forgetuserID', async(req, res) => {
         
         }
     }
-    
+    Z
 });
 
 
 //update or change password for current account
 registrationRouter.patch ("/account/changepassword" ,async (req, res) => {
+
+  if(!req.body.player || !req.body.password){
+    res.status(404).send('Please provide username and password')
+    return
+  }
+
     if (!req.body.newpassword) {
       return res.status(400).send('New password is required');
   }
 
     let findUser = await client.db('ds_db').collection('account').findOne({player:req.body.player});
 
-    if (findUser) {
+    if(!findUser) {
+      res.send('user not found')
+      return
+    }
 
         if (bcrypt.compareSync(req.body.password, findUser.password) == true){ //compare the password with the hashed password in the database
         
         req.body.password = bcrypt.hashSync(req.body.newpassword, 10); //hash the new password
         await client.db('ds_db').collection('account').updateOne({player:req.body.player}, {$set: {password:req.body.password}}); //update the password in the database
         res.send('password changed successfully');
-        }
-
+        } 
         else { //password is incorrect
             res.status(401).send('password incorrect')
           }
 
-    }
-
-    else { //not found
-
-        res.send('user not found')
-  
-      }
-    
     });
 
 
 //delete current account
 registrationRouter.delete('/account/delete/:id',verifyToken, async(req, res) => {
-        if(req.authData._id != req.params.id){
+
+  let player = await client.db("ds_db").collection("account").findOne(
+    { _id: new ObjectId(req.params.id) }
+  )
+
+  if(!req.body.password || !req.body.player) {
+    res.send('Not enough data\nPlease provide the player and password')
+    return
+  }
+
+  if(req.authData._id != req.params.id){
           res.send('User is not authorized')
+          return
+        }
+        else if(!player){
+          res.send(`Could not find player`)
+          return
+        }
+        else if(bcrypt.compareSync(req.body.password,player.password)==false){
+          res.send('Incorrect password')
+          return
         }
         else{
+
         let result= await client.db("ds_db").collection("account").deleteOne({
             _id: new ObjectId(req.params.id)
         })
-        
-        }
+
+        let delete_stats = await client.db("ds_db").collection("stats").deleteOne(
+          { playerId: player.player }
+        )
         
         res.send("Account Deleted Successfully");
+
+        }
+        
     
     });

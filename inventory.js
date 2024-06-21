@@ -56,8 +56,6 @@ InventoryRouter.get('/players/inventory', async (req, res) => {
   res.status(400).send("Error")
   return
 }
-
-
 });
 
 //POST an item to a player's inventory
@@ -77,7 +75,9 @@ if (!playerId || !itembuy) {
     if(!player.coin){
       return res.status(404).send('You have no coins');
     }
+
     const coin=player.coin-itemfind.coin
+
     if(coin>=0){
     await db.collection('stats').updateOne(
       { playerId: playerId },
@@ -85,8 +85,9 @@ if (!playerId || !itembuy) {
         $push: { inventory: 
           {
             item: itemfind.item,
+            health_pts: itemfind.health_pts,
             attack_action:itemfind.attack_action,
-            health_pts: itemfind.health
+            evade_action: itemfind.evade_action
           } },
         $set: { coin: coin }
       }
@@ -131,10 +132,10 @@ InventoryRouter.patch('/usePotion', async (req, res) => {
   }
   const newAttackAction = Math.min(player.attack_action + potion.attack_action, 10);
   const newHealthPts = Math.min(player.health_pts + potion.health_pts, 10);
-  const evadePts= Math.min(player.evade_action + potion.evade, 5);
+  const evadePts= Math.min(player.evade_action + potion.evade_action, 5);
   // Update the attack_action and health_pts field
   let updatedPlayer = null;
-  if(player.attack_action<=10 && player.health_pts<=10){  
+  if(player.attack_action<=10 && player.health_pts<=10 && player.evade_action<=10){  
      updatedPlayer = await db.collection("stats").updateOne(
       { playerId:playerId },
       {
@@ -148,7 +149,7 @@ InventoryRouter.patch('/usePotion', async (req, res) => {
     );
   
   }
-  else if(player.attack_action>=10 && player.health_pts>=10)
+  else if(player.attack_action>=10 && player.health_pts>=10&& player.evade_action>=10)
   {
     return res.status(400).send("The attack and health is full");
   }
