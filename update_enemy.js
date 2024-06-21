@@ -57,7 +57,7 @@ async function update_enemy (playerId) {
                 $inc:
                 {
                     coin: how_much.coin,
-                    score: how_much.score
+                    current_score: how_much.score
                 }
             }
         )

@@ -258,7 +258,7 @@ async function isPlayerAlive(playerId, res) {
         let player_leaderboard = await ds_db.collection('leaderboard').insertOne(
             {
                 player: final_stats.playerId,
-                score: final_stats.score,
+                score: final_stats.current_score,
                 coin: final_stats.coin
             }
         )
