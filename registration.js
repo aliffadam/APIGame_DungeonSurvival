@@ -82,6 +82,7 @@ registrationRouter.post('/account/login',async(req,res) => {
   registrationRouter.get('/account/:id',verifyToken, async(req, res) => {
     if (req.authData._id != req.params.id) {
       res.send('User is not authorized')
+      return
     
     }
     let auth = req.headers.authorization
@@ -98,6 +99,7 @@ registrationRouter.post('/account/login',async(req,res) => {
   
     if (req.authData._id != req.params.id) {
       res.send('User is not authorized')
+      return
     }
     else{
     let result= await client.db("ds_db").collection("account").findOne({
