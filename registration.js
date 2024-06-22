@@ -63,7 +63,7 @@ registrationRouter.post('/account/login',async(req,res) => {
             { _id: result._id, player: result.player}, 
             'chiikawaaaaaaa',
           
-          { expiresIn: 60*60  });
+          { expiresIn: 60*60*2  });
           //paaword is correct
           res.send(token);
         } else{
@@ -86,7 +86,6 @@ registrationRouter.post('/account/login',async(req,res) => {
     if (req.authData._id != req.params.id) {
       res.send('User is not authorized')
       return
-    
     }
     let auth = req.headers.authorization
     console.log(auth)
