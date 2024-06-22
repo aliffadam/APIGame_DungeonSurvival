@@ -206,6 +206,41 @@ Action_Router.delete('/action', compareToken, async (req, res) => {
     }
 })
 
+Action_Router.get('/stats', compareToken, async (req, res) => {
+
+    let playerId = req.body.playerId
+
+    //Validate! Check if there is enough data?
+    if (!playerId) {    //data to be checked availability
+        res.send(`There's some undefined field.\nplayerId: ${playerId}`)
+        return
+    }
+
+    //find player in stats
+    let player = await getPlayerStats(playerId, res)
+
+    if (!player) {
+        return
+    }
+
+    let show_stats = await collection_stats.aggregate(
+        [
+            {
+                '$match': {
+                    'playerId': playerId
+                }
+            }, {
+                '$project': {
+                    '_id': 0
+                }
+            }
+        ]
+    )
+
+    res.send(show_stats)
+
+})
+
 async function getActiveAction(playerId, res) {
 
     //Validate! Check if player have an active action
