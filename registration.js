@@ -217,7 +217,6 @@ registrationRouter.post('/account/forgetuserID', async(req, res) => {
         
         }
     }
-    Z
 });
 
 
@@ -289,6 +288,10 @@ registrationRouter.delete('/account/delete/:id',verifyToken, async(req, res) => 
 
         let delete_leaderboard = await client.db('ds_db').collection('leaderboard').deleteOne(
           { player: player.player }
+        )
+
+        let delete_action = await client.db('ds_db').collection('leaderboard').deleteOne(
+          { playerId: player.player }
         )
         
         res.send("Account Deleted Successfully");

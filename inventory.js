@@ -4,7 +4,7 @@ module.exports=InventoryRouter;
 const client = require('./database')
 const db = client.db('ds_db');
 
-
+let { compareToken } = require('./token.js')
 
 const getPlayerById = async (playerId) => {
   if (!playerId) {
@@ -22,7 +22,7 @@ const getPlayerById = async (playerId) => {
 
 
 // GET the players
-InventoryRouter.get('/players/inventory', async (req, res) => {
+InventoryRouter.get('/players/inventory', compareToken, async (req, res) => {
   const{playerId}=req.body;
   if (!playerId) {
     res.status(400).send('Please enter u playerId')
@@ -59,7 +59,7 @@ InventoryRouter.get('/players/inventory', async (req, res) => {
 });
 
 //POST an item to a player's inventory
-InventoryRouter.post('/buyinventory', async (req, res) => {
+InventoryRouter.post('/buyinventory', compareToken, async (req, res) => {
 const { playerId,itembuy } = req.body;
 if (!playerId || !itembuy) {
   return res.status(400).send('Missing required fields: playerId and itembuy are required.');
@@ -115,7 +115,7 @@ if (!playerId || !itembuy) {
 
 
 
-InventoryRouter.patch('/usePotion', async (req, res) => {
+InventoryRouter.patch('/usePotion', compareToken, async (req, res) => {
   const { playerId, item } = req.body;
   if (!playerId || !item) {
     return res.status(400).send('Missing required fields: playerId and item are required.');
@@ -165,7 +165,7 @@ InventoryRouter.patch('/usePotion', async (req, res) => {
   
 });
 // DELETE an item from a player's inventory
-InventoryRouter.delete('/delete/inventory', async (req, res) => {
+InventoryRouter.delete('/delete/inventory', compareToken, async (req, res) => {
   const { playerId, item } = req.body;
   if (!playerId || !item) {
     return res.status(400).send('Missing required fields: playerId and item are required.');
@@ -196,7 +196,7 @@ InventoryRouter.delete('/delete/inventory', async (req, res) => {
 });
 
 // GET the items
-InventoryRouter.get('/inventory', async (req, res) => {
+InventoryRouter.get('/shop', async (req, res) => {
  
   try {
     const items = await db.collection('potion').find().toArray();

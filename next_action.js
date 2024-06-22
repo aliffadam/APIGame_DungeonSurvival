@@ -10,11 +10,11 @@ let collection_action = ds_db.collection('action')
 let collection_stats = ds_db.collection('stats')
 
 let { getPlayerStats } = require(`./valid.js`)
-
 let { update_enemy } = require(`./update_enemy.js`)
+let { compareToken } = require(`./token.js`)
 
 //FINISH
-Action_Router.post('/action', async (req, res) => {
+Action_Router.post('/action', compareToken, async (req, res) => {
 
     let playerId = req.body.playerId
     let action = req.body.action
@@ -64,7 +64,7 @@ Action_Router.post('/action', async (req, res) => {
 })
 
 //FINISH
-Action_Router.get('/action', async (req, res) => {
+Action_Router.get('/action', compareToken, async (req, res) => {
 
     let playerId = req.body.playerId
 
@@ -90,7 +90,7 @@ Action_Router.get('/action', async (req, res) => {
 })
 
 //FINISH
-Action_Router.patch('/action', async (req, res) => {
+Action_Router.patch('/action', compareToken, async (req, res) => {
 
     let playerId = req.body.playerId
 
@@ -179,7 +179,7 @@ Action_Router.patch('/action', async (req, res) => {
 })
 
 //FINISH
-Action_Router.delete('/action', async (req, res) => {
+Action_Router.delete('/action', compareToken, async (req, res) => {
 
     let playerId = req.body.playerId
 
@@ -268,6 +268,25 @@ async function isPlayerAlive(playerId, res) {
     }
 
     return true
+
+}
+
+function verifyToken(req, res, next) {
+
+    const authHeader = req.headers.authorization
+    const token = authHeader && authHeader.split(` `)[1]
+
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, "secret-password", (err, decoded) => {
+        console.log(err)
+
+        if (err) return res.sendStatus(403)
+
+        req.identity = decoded
+
+        next()
+    })
 
 }
 
