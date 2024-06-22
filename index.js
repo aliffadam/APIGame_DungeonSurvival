@@ -45,7 +45,8 @@ gameplay related:
 POST - /action
 GET - /action
 PATCH - /action
-DELETE - /action`
+DELETE - /action
+GET - /stats`
 
 app.use((req, res) => {
   res.send(no_endpoint_message)

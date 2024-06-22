@@ -235,7 +235,7 @@ Action_Router.get('/stats', compareToken, async (req, res) => {
                 }
             }
         ]
-    )
+    ).toArray()
 
     res.send(show_stats)
 
