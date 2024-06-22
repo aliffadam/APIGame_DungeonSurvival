@@ -173,9 +173,9 @@ Action_Router.patch('/action', compareToken, async (req, res) => {
         )
 
         if (is_enemy_alive) {
-        res.send(`Player Health: ${latest_stats.health_pts}\nEnemy Health: ${latest_stats.enemy_current_health}\nEnemy Next Action: ${latest_stats.enemy_next_move.attack_name}`)
+        res.send(`Player Health: ${latest_stats.health_pts}\nEnemy Health: ${latest_stats.enemy_current_health}\nEnemy Next Action: ${latest_stats.enemy_next_move.attack_name}\nEnemy Next Action Damage: ${latest_stats.enemy_next_move.damage}`)
         } else {
-        res.send(`Player Health: ${latest_stats.health_pts}\nA new ${latest_stats.current_enemy} appeared!\nEnemy Health: ${latest_stats.enemy_current_health}\nEnemy Next Action: ${latest_stats.enemy_next_move.attack_name}`)
+        res.send(`Player Health: ${latest_stats.health_pts}\nA new ${latest_stats.current_enemy} appeared!\nEnemy Health: ${latest_stats.enemy_current_health}\nEnemy Next Action: ${latest_stats.enemy_next_move.attack_name}\nEnemy Next Action Damage: ${latest_stats.enemy_next_move.damage}`)
         }
 
     } else { res.send('Unable to do action,\nYou can choose "attack", "evade" and "defend"\nYou need enough action points to use "attack" and "evade"') }
