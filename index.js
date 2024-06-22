@@ -35,7 +35,7 @@ DELETE - /account/delete/(your id)
 [If you are unauthorized, try getting a new token]
 
 inventory and potion related:
-POST - /players/inventory
+GET - /players/inventory
 POST - /buyinventory
 PATCH - /usePotion
 DELETE - /delete/inventory
