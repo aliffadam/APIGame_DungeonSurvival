@@ -43,9 +43,12 @@ async function update_enemy (playerId) {
 
     let enemy_name
     let enemy_health
+    let is_alive
 
     // enemy is dead
     if(current_enemy.enemy_current_health <= 0) {
+
+        is_alive = false
 
         let how_much = await collection_almanac.findOne(
             { enemy: current_enemy.current_enemy }
@@ -67,6 +70,7 @@ async function update_enemy (playerId) {
         enemy_health = current_enemy.base_health
 
     } else {    //enemy is still alive *dramatic music*
+        is_alive = true
         enemy_name = current_enemy.current_enemy
         enemy_health = current_enemy.enemy_current_health
     }
@@ -84,5 +88,7 @@ async function update_enemy (playerId) {
             }
         }
     )
+
+    return is_alive
 
 }

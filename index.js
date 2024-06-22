@@ -46,7 +46,9 @@ POST - /action
 GET - /action
 PATCH - /action
 DELETE - /action
-GET - /stats`
+GET - /stats
+GET - /wiki
+GET - /leaderboard`
 
 app.use((req, res) => {
   res.send(no_endpoint_message)

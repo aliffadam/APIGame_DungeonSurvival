@@ -170,7 +170,7 @@ registrationRouter.post('/account/register',async(req,res)=>{
           attack_action:10,
           evade_action:5,
           inventory:[],
-          coin: 0,
+          coin: 10,
           current_score:0,
           current_enemy:document.enemy,
           enemy_current_health:document.base_health,
