@@ -16,43 +16,43 @@ app.use(inventoryRoute)
 app.use(nextActionRoute)
 app.use(registrationRoute)
 
-// app.get('/', (req, res) => {
-//    res.send('Welcome to dungeon dive game!')
-// })
-
-let no_endpoint_message = `The endpoint you entered is not available
-Here are some endpoints available
-
-account related:
-POST - /account/register
-POST - /account/forgetuserID
-POST - /account/login
-GET - /account/(your id)
-PATCH - /account/changepassword
-DELETE - /account/delete/(your id)
-
-[endpoints below needs token in token bearer. Login to get your token]
-[If you are unauthorized, try getting a new token]
-
-inventory and potion related:
-GET - /players/inventory
-POST - /buyinventory
-PATCH - /usePotion
-DELETE - /delete/inventory
-GET - /shop
-
-gameplay related:
-POST - /action
-GET - /action
-PATCH - /action
-DELETE - /action
-GET - /stats
-GET - /wiki
-GET - /leaderboard`
-
-app.use((req, res) => {
-  res.send(no_endpoint_message)
+app.get('/', (req, res) => {
+   res.send('Welcome to dungeon dive game!')
 })
+
+// let no_endpoint_message = `The endpoint you entered is not available
+// Here are some endpoints available
+
+// account related:
+// POST - /account/register
+// POST - /account/forgetuserID
+// POST - /account/login
+// GET - /account/(your id)
+// PATCH - /account/changepassword
+// DELETE - /account/delete/(your id)
+
+// [endpoints below needs token in token bearer. Login to get your token]
+// [If you are unauthorized, try getting a new token]
+
+// inventory and potion related:
+// GET - /players/inventory
+// POST - /buyinventory
+// PATCH - /usePotion
+// DELETE - /delete/inventory
+// GET - /shop
+
+// gameplay related:
+// POST - /action
+// GET - /action
+// PATCH - /action
+// DELETE - /action
+// GET - /stats
+// GET - /wiki
+// GET - /leaderboard`
+
+// app.use((req, res) => {
+//   res.send(no_endpoint_message)
+// })
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.listen(port, () => {
